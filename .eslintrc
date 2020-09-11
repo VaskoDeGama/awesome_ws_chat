@@ -1,0 +1,24 @@
+{
+  "env": {
+    "browser": true,
+    "es6": true,
+    "jest": true,
+    "node": true,
+    "jest/globals": true
+  },
+  "parser": "babel-eslint",
+  "extends": [
+    "airbnb-base",
+    "plugin:jest/recommended",
+    "prettier"
+  ],
+  "rules": {
+    // enable additional rules
+    "linebreak-style": ["error", "unix"],
+    "quotes": ["error", "single"],
+    "semi": ["error", "never"],
+    "no-restricted-syntax": "off",
+    "no-console": "off"
+  },
+  "plugins": ["import","jest"]
+}

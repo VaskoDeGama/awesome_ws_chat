@@ -1,0 +1,46 @@
+{
+  "name": "ws-test",
+  "version": "1.0.0",
+  "description": "ws, chat",
+  "scripts": {
+    "server": "nodemon ./src/server/index.js",
+    "dev": "webpack-dev-server --mode development --open",
+    "lint": "eslint ./src/**.js",
+    "test": "jest --coverage",
+    "watch": "jest --watch"
+  },
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VaskoDeGama/awesome_ws_chat.git"
+  },
+  "author": "Vasiliy Kamenyuk <karmenyuk@yandex.ru>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/VaskoDeGama/awesome_ws_chat/issues"
+  },
+  "homepage": "https://github.com/VaskoDeGama/awesome_ws_chat#readme",
+  "devDependencies": {
+    "@babel/core": "^7.11.6",
+    "@babel/preset-env": "^7.11.5",
+    "babel-eslint": "^10.1.0",
+    "babel-loader": "^8.1.0",
+    "css-loader": "^4.3.0",
+    "eslint": "^7.7.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-jest": "^23.20.0",
+    "html-webpack-plugin": "^4.4.1",
+    "jest": "^26.4.2",
+    "jest-runner-eslint": "^0.10.0",
+    "nodemon": "^2.0.4",
+    "sass": "^1.26.10",
+    "sass-loader": "^10.0.2",
+    "style-loader": "^1.2.1",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.11.0"
+  },
+  "dependencies": {}
+}
