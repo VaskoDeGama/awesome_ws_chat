@@ -62,7 +62,7 @@ wss.on('connection', (ws) => {
       }
       case 'casterLeaves': {
         if (whoInChat.length > 0) {
-          const next = Math.floor(Math.random() * Math.floor(whoInChat.length - 1));
+          const next = Math.floor(Math.random() * Math.floor(whoInChat.length - 1))
           whoInChat[next].client.send(prepareData({type: 'startCast'}))
         }
         break

@@ -29,6 +29,18 @@ const getSnapshot = () => {
 }
 
 // video ready
+
+
+const startCast = (fps) => {
+  broadcasting = setInterval(() => {
+    const data = {
+      type: 'stream',
+      message: getSnapshot(),
+    }
+    client.send(prepareData(data))
+  }, 1000 / fps)
+}
+
 video.addEventListener('loadeddata', () => {
 
   const vidStyleData = video.getBoundingClientRect()
@@ -58,15 +70,6 @@ video.addEventListener('loadeddata', () => {
 
 })
 
-const startCast = (fps) => {
-  broadcasting = setInterval(() => {
-    const data = {
-      type: 'stream',
-      message: getSnapshot(),
-    }
-    client.send(prepareData(data))
-  }, 1000 / fps)
-}
 
 // close chat
 document.querySelectorAll('.close').forEach(node => {
@@ -170,7 +173,7 @@ client.onclose = () => {
   }
   client.send(prepareData(msg))
   clearInterval(broadcasting)
-  client.close();
+  client.close()
 }
 window.addEventListener('beforeunload', () => {
   const msg = {
@@ -187,11 +190,11 @@ window.addEventListener('beforeunload', () => {
   }
 
   clearInterval(broadcasting)
-  client.close();
+  client.close()
 })
 
 // error
 client.onerror = (error) => {
   console.error('failed to connect', error)
-  client.close();
+  client.close()
 }
