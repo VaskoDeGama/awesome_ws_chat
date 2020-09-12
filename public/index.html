@@ -8,22 +8,43 @@
 <section class="msger">
   <header class="msger-header">
     <div class="msger-header-title">
-      <i class="fas fa-comment-alt"></i> SimpleChat
-    </div>
-    <div class="msger-header-options">
-      <span><i class="fas fa-cog"></i></span>
+      <i class="fas fa-comment-alt"></i> VideoChat
     </div>
   </header>
 
-  <main class="msger-chat">
+  <main class="video-chat">
+  <div class="webcam">
+    <video  id="webcam"  autoplay></video>
+  </div>
 
+    <div class="stream">
+
+    </div>
 
   </main>
 
+</section>
+
+<section id="textChat" class="msger">
+  <header class="msger-header">
+    <div class="msger-header-title">
+      <i class="fas fa-comment-alt"></i> TextChat
+    </div>
+    <div class="msger-header-options">
+      <span class="close"><i class="fas fa-cog">hide</i></span>
+    </div>
+  </header>
+  <main class="msger-chat">
+  </main>
+
   <form class="msger-inputarea">
-    <input type="text" class="msger-input" placeholder="Enter your message...">
+    <label>
+      <input type="text" class="msger-input" placeholder="Enter your message...">
+    </label>
     <button class="msger-send-btn">Send</button>
   </form>
 </section>
+
+<span class="close">open chat</span>
 </body>
 </html>

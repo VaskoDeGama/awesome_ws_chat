@@ -1,4 +1,6 @@
 const WebSocket= require('ws')
+const {parseData, prepareData, formatDate} = require('./utils')
+
 
 const config = {
   host: 'localhost',
@@ -6,11 +8,13 @@ const config = {
   clientTracking: true
 }
 
+
 const wss = new WebSocket.Server(config, () => {
   console.log(`I am alive on port: ${config.port} `)
 })
 
-function broadcast(data) {
+
+const broadcast = (data) => {
   wss.clients.forEach((client) => {
     if (client.readyState === WebSocket.OPEN) {
       client.send(data)
@@ -19,14 +23,19 @@ function broadcast(data) {
 }
 
 
-
 wss.on('connection', (ws) => {
-  console.log('A new connection!')
-  ws.send('SERVER: Welcome to the ws chat')
 
-  ws.on('message', (msg) => {
-    console.log(`Received message: ${msg}`)
-    broadcast(msg)
+  console.log('A new connection!')
+  const hi = {
+    type: 'text',
+    message: 'welcome to Awesome chat',
+  }
+  ws.send(prepareData(hi))
+
+  ws.on('message', (data) => {
+    const receivedData =  parseData(data)
+    console.log(`[${ formatDate(Date.now()) }] Received message: ${receivedData.type}`)
+    broadcast(data)
   })
 
   ws.on('close', () => {
