@@ -13,19 +13,19 @@ const streamBox = document.querySelector('.stream')
 
 const screenshot = document.createElement('canvas')
 const streamCanvas = document.createElement('canvas')
-
+const img = new Image()
 
 const clientID = uuidv4()
-const FPS = 10
 let srCtx = null
 let streamCtx = null
 let broadcasting = null
+let canCast = false
 
 
 // snapshot
 const getSnapshot = () => {
   srCtx.drawImage(video, 0, 0)
-  return screenshot.toDataURL('image/jpeg', 0.2).split(',')[1]
+  return screenshot.toDataURL('image/jpeg', 0.1).split(',')[1]
 }
 
 // video ready
@@ -50,16 +50,23 @@ video.addEventListener('loadeddata', () => {
   streamBox.appendChild(screenshot)
   srCtx = screenshot.getContext('2d')
   streamCtx = streamCanvas.getContext('2d')
+  if (canCast) {
+    console.log('Start Casting')
+    startCast(3)
+  }
+
+
+})
+
+const startCast = (fps) => {
   broadcasting = setInterval(() => {
     const data = {
       type: 'stream',
       message: getSnapshot(),
     }
     client.send(prepareData(data))
-  }, 1000 / FPS)
-
-})
-
+  }, 1000 / fps)
+}
 
 // close chat
 document.querySelectorAll('.close').forEach(node => {
@@ -70,7 +77,10 @@ document.querySelectorAll('.close').forEach(node => {
 
 // get webcam
 const constraints = {
-  video: {width: {ideal: 300}},
+  video: {
+    width: {ideal: 300},
+    height: {ideal: 300}
+  },
 }
 
 function hasGetUserMedia() {
@@ -99,8 +109,13 @@ client.onmessage = (event) => {
     if (chatBox.scrollTop < chatBox.scrollHeight) {
       chatBox.scrollTop = chatBox.scrollHeight
     }
+    if(data.canCast) {
+      canCast = true
+      console.log('Can Casting')
+    }
+
   } else {
-    const img = new Image()
+
     img.onload = () => {
       streamCtx.drawImage(img, 0, 0)
     }

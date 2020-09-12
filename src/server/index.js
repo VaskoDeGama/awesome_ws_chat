@@ -26,9 +26,11 @@ const broadcast = (data) => {
 wss.on('connection', (ws) => {
 
   console.log('A new connection!')
+
   const hi = {
     type: 'text',
     message: 'welcome to Awesome chat',
+    canCast: wss.clients.size === 1
   }
   ws.send(prepareData(hi))
 
