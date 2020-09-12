@@ -22,6 +22,7 @@ const broadcast = (data) => {
   })
 }
 
+let whoInChat = []
 
 wss.on('connection', (ws) => {
 
@@ -29,7 +30,7 @@ wss.on('connection', (ws) => {
 
   const hi = {
     type: 'text',
-    message: 'welcome to Awesome chat',
+    message: 'SERVER: welcome to Awesome chat',
     canCast: wss.clients.size === 1
   }
   ws.send(prepareData(hi))
@@ -37,7 +38,39 @@ wss.on('connection', (ws) => {
   ws.on('message', (data) => {
     const receivedData =  parseData(data)
     console.log(`[${ formatDate(Date.now()) }] Received message: ${receivedData.type}`)
-    broadcast(data)
+    switch (receivedData.type) {
+      case 'goodbye': {
+        whoInChat = whoInChat.filter(client => client.id !== receivedData.clientID)
+        const response = {
+          type: 'text',
+          message: `CLIENT: ${receivedData.clientID} leaves chat `,
+        }
+        broadcast(prepareData(response))
+        break
+      }
+      case 'hello': {
+        whoInChat.push({
+          id: receivedData.clientID,
+          client: ws
+        })
+        const response = {
+          type: 'text',
+          message: `CLIENT: ${receivedData.clientID} now in chat`,
+        }
+        broadcast(prepareData(response))
+        break
+      }
+      case 'casterLeaves': {
+        if (whoInChat.length > 0) {
+          const next = Math.floor(Math.random() * Math.floor(whoInChat.length - 1));
+          whoInChat[next].client.send(prepareData({type: 'startCast'}))
+        }
+        break
+      }
+      default:
+        broadcast(data)
+    }
+
   })
 
   ws.on('close', () => {

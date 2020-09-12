@@ -104,22 +104,31 @@ if (hasGetUserMedia()) {
 // message handler
 client.onmessage = (event) => {
   const data = parseData(event.data)
-  if (data.type === 'text') {
-    chatBox.appendChild(message(data.message, 'Chat'))
-    if (chatBox.scrollTop < chatBox.scrollHeight) {
-      chatBox.scrollTop = chatBox.scrollHeight
+
+  switch (data.type) {
+    case 'text': {
+      chatBox.appendChild(message(data.message, 'Chat'))
+      if (chatBox.scrollTop < chatBox.scrollHeight) {
+        chatBox.scrollTop = chatBox.scrollHeight
+      }
+      if(data.canCast) {
+        canCast = true
+        console.log('Can Casting')
+      }
+      break
     }
-    if(data.canCast) {
+    case 'startCast': {
+      console.log('try start cast')
       canCast = true
-      console.log('Can Casting')
+      startCast(3)
+      break
     }
-
-  } else {
-
-    img.onload = () => {
-      streamCtx.drawImage(img, 0, 0)
+    default: {
+      img.onload = () => {
+        streamCtx.drawImage(img, 0, 0)
+      }
+      img.src = `data:image/png;base64,${data.message}`
     }
-    img.src = `data:image/png;base64,${data.message}`
   }
 }
 
@@ -127,12 +136,10 @@ client.onmessage = (event) => {
 // say hi and start stream
 client.onopen = () => {
   const msg = {
-    type: 'text',
-    message: `CLIENT: ${clientID} connected`,
+    type: 'hello',
     clientID,
   }
   client.send(prepareData(msg))
-
 }
 
 
@@ -142,7 +149,6 @@ document
     .querySelector('.msger-inputarea')
     .addEventListener('submit', (event) => {
       event.preventDefault()
-
       if (input.value.length !== 0) {
         client.send(
             prepareData({
@@ -155,31 +161,37 @@ document
     })
 
 
-
-
 // disconnect
 client.onclose = () => {
   const msg = {
-    type: 'text',
+    type: 'goodbye',
     message: `CLIENT: ${clientID} disconnected`,
     clientID,
-    eventType: 'disconnected',
   }
   client.send(prepareData(msg))
   clearInterval(broadcasting)
+  client.close();
 }
 window.addEventListener('beforeunload', () => {
   const msg = {
-    type: 'text',
+    type: 'goodbye',
     message: `CLIENT: ${clientID} disconnected`,
     clientID,
-    eventType: 'disconnected',
   }
   client.send(prepareData(msg))
+  if (canCast) {
+    const castNext = {
+      type: 'casterLeaves'
+    }
+    client.send(prepareData(castNext))
+  }
+
   clearInterval(broadcasting)
+  client.close();
 })
 
 // error
 client.onerror = (error) => {
   console.error('failed to connect', error)
+  client.close();
 }
