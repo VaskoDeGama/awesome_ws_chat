@@ -5,6 +5,15 @@ import Mailer from './Mailer'
 import { message, parseData, prepareData, uuidv4 } from './utils'
 
 
+// this.client = new Client()
+// this.client.start()
+//
+// // ....
+//
+// const res = await this.client.fetch({})
+// this.client.on('pic', blob => this.applyPic())
+//
+
 const CLIENT_ID = uuidv4()
 
 
@@ -89,7 +98,7 @@ document
           type: 'text',
           message: input.value,
         })
-      console.log('RESPONSE FROM MAILER:',response.payload)
+      console.log('RESPONSE FROM MAILER:',response)
       if (response.type === 'ok') {
         input.value = ''
       }
@@ -147,21 +156,6 @@ client.onopen = () => {
     clientID: CLIENT_ID,
   }
   client.send(prepareData(msg))
-
-
-  // test
-  const promises = []
-  for(let i = 0; i < 10; i += 1) {
-   const prom = mailer.fetchWS({
-      type: 'test',
-    })
-    promises.push(prom)
-
-
-  }
-  Promise.all(promises).then(data => console.log(data))
-
-
 }
 
 
