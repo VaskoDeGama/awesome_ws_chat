@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "ws, chat",
   "scripts": {
-    "ws": "nodemon src/server/server.ws.js",
+    "ws": "nodemon src/server/index.js",
     "http": "nodemon src/server/server.http.js",
     "client": "webpack-dev-server --open",
     "lint": "eslint ./src/**.js",

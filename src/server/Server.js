@@ -41,7 +41,7 @@ class Server {
   broadcast(data) {
     this.server.clients.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {
-        client.send(prepareData(data))
+        client.send(data)
       }
     })
   }
@@ -80,7 +80,7 @@ class Server {
               id: receivedData.clientID,
             }
 
-            this.broadcast(response)
+            this.broadcast(prepareData(response))
             break
           }
           case 'hello': {
@@ -89,10 +89,10 @@ class Server {
             const response = {
               type: 'text',
               message: `CLIENT: ${receivedData.clientID} now in chat`,
-              messageId: receivedData.id,
+              messageId: receivedData.messageId,
             }
 
-            this.broadcast(response)
+            this.broadcast(prepareData(response))
             break
           }
           case 'casterLeaves': {
