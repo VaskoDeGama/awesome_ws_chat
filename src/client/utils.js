@@ -27,9 +27,9 @@ const prepareData = (data) => {
 }
 
 
-const message = (msg, username) => {
+const message = (msg, username, isMY) => {
   const msgBox = document.createElement('div')
-  msgBox.classList.add('msg', 'left-msg')
+  msgBox.classList.add('msg', `${isMY ? 'right-msg' : 'left-msg'}`)
   msgBox.innerHTML = `
       <div
         class='msg-img'

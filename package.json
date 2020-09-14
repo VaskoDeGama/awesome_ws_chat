@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "description": "ws, chat",
   "scripts": {
-    "server": "nodemon ./src/server/index.js",
-    "dev": "webpack-dev-server --mode development --open",
+    "ws": "nodemon src/server/server.ws.js",
+    "http": "nodemon src/server/server.http.js",
+    "client": "webpack-dev-server --open",
     "lint": "eslint ./src/**.js",
     "test": "jest --coverage",
     "watch": "jest --watch"
@@ -43,6 +44,7 @@
     "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
+    "micro": "^9.3.4",
     "ws": "^7.3.1"
   }
 }

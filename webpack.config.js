@@ -23,6 +23,18 @@ module.exports = {
       }
     ]
   },
+  devServer: {
+      contentBase: path.join('../dist/static'),
+      clientLogLevel: 'none',
+      publicPath: '/',
+      compress: false,
+      disableHostCheck: true,
+      host: 'localhost',
+      port: 9001,
+
+  },
+  devtool: 'source-map',
+  mode: 'development',
   plugins: [
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, "public", "index.html")

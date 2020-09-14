@@ -22,7 +22,7 @@ const broadcast = (data) => {
   })
 }
 
-let whoInChat = []
+let whoInChat = {  }
 
 wss.on('connection', (ws) => {
 
@@ -37,34 +37,39 @@ wss.on('connection', (ws) => {
 
   ws.on('message', (data) => {
     const receivedData =  parseData(data)
+
     console.log(`[${ formatDate(Date.now()) }] Received message: ${receivedData.type}`)
     switch (receivedData.type) {
       case 'goodbye': {
-        whoInChat = whoInChat.filter(client => client.id !== receivedData.clientID)
+        delete whoInChat[receivedData.clientID]
         const response = {
           type: 'text',
           message: `CLIENT: ${receivedData.clientID} leaves chat `,
+          id: receivedData.id
         }
         broadcast(prepareData(response))
         break
       }
       case 'hello': {
-        whoInChat.push({
-          id: receivedData.clientID,
-          client: ws
-        })
+        whoInChat[receivedData.clientID] = ws
         const response = {
           type: 'text',
           message: `CLIENT: ${receivedData.clientID} now in chat`,
+          messageId: receivedData.id
         }
         broadcast(prepareData(response))
         break
       }
       case 'casterLeaves': {
-        if (whoInChat.length > 0) {
-          const next = Math.floor(Math.random() * Math.floor(whoInChat.length - 1))
-          whoInChat[next].client.send(prepareData({type: 'startCast'}))
+        if (Object.keys(whoInChat).length > 0) {
+          const next = Object.keys(whoInChat).slice(-1).pop()
+          whoInChat[next].send(prepareData({type: 'startCast'}))
         }
+        break
+      }
+      case 'text': {
+        whoInChat[receivedData.owner].send(prepareData({ type: 'ok' }))
+        broadcast(data)
         break
       }
       default:
