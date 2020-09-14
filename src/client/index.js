@@ -31,10 +31,6 @@ const broadcast = new Broadcast({
 })
 
 
-
-
-
-
 let canCast = false
 
 video.addEventListener('loadeddata', () => {
@@ -76,13 +72,41 @@ if (hasGetUserMedia()) {
   console.error('getUserMedia() is not supported by your browser')
 }
 
+
+
+
+
+
+
+// submit handler
+document
+  .querySelector('.msger-inputarea')
+  .addEventListener('submit', async (event) => {
+    event.preventDefault()
+    if (input.value.length !== 0) {
+      const response = await mailer.fetchWS(
+        {
+          type: 'text',
+          message: input.value,
+        })
+      console.log('RESPONSE FROM MAILER:',response.payload)
+      if (response.type === 'ok') {
+        input.value = ''
+      }
+    }
+  })
+
+
+
+
+
 // message handler
 client.onmessage = (event) => {
   const data = parseData(event.data)
   switch (data.type) {
     case 'text': {
       chatBox.appendChild(
-        message(data.message, 'Chat', mailer.itMyMessage(data.messageId)),
+        message(data.message, data.owner, mailer.itMyMessage(data.messageId) ),
       )
       if (chatBox.scrollTop < chatBox.scrollHeight) {
         chatBox.scrollTop = chatBox.scrollHeight
@@ -99,7 +123,8 @@ client.onmessage = (event) => {
       break
     }
     case 'ok': {
-      mailer.resolve(data.type)
+      const localResolve = mailer.messeges[data.messageId]
+      localResolve(data)
       break
     }
     case 'startCast' : {
@@ -110,6 +135,11 @@ client.onmessage = (event) => {
   }
 }
 
+
+
+
+
+
 // say hi and start stream
 client.onopen = () => {
   const msg = {
@@ -117,40 +147,24 @@ client.onopen = () => {
     clientID: CLIENT_ID,
   }
   client.send(prepareData(msg))
+
+
+  // test
+  const promises = []
+  for(let i = 0; i < 10; i += 1) {
+   const prom = mailer.fetchWS({
+      type: 'test',
+    })
+    promises.push(prom)
+
+
+  }
+  Promise.all(promises).then(data => console.log(data))
+
+
 }
 
-/**
- *  send msg after add message id
- * @param owner
- * @param client
- * @param mail
- */
 
-/**
- * check owner
- * @param clientID
- * @param msgId
- * @returns {boolean}
- */
-
-
-// submit handler
-document
-  .querySelector('.msger-inputarea')
-  .addEventListener('submit', async (event) => {
-    event.preventDefault()
-    if (input.value.length !== 0) {
-     const response = await mailer.fetchWS(
-        {
-          type: 'text',
-          message: input.value,
-        })
-      console.log('RESPONSE FROM MAILER:',response)
-     if (response === 'ok') {
-       input.value = ''
-     }
-    }
-  })
 
 
 // disconnect

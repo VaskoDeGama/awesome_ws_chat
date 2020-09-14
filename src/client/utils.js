@@ -27,7 +27,7 @@ const prepareData = (data) => {
 }
 
 
-const message = (msg, username, isMY) => {
+const message = (msg, username = 'server', isMY) => {
   const msgBox = document.createElement('div')
   msgBox.classList.add('msg', `${isMY ? 'right-msg' : 'left-msg'}`)
   msgBox.innerHTML = `
