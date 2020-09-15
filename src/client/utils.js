@@ -9,14 +9,14 @@ const uuidv4 = () => {
     if (i === 12) {
       uuid += 4
     } else {
-      uuid += i === 16 ? (random && 3 || 8) : random.toString(16)
+      uuid += i === 16 ? (random && 3) || 8 : random.toString(16)
     }
   }
-  return uuid.slice(0,8)
+  return uuid.slice(0, 8)
 }
 
-const formatDate = (date) => new Intl.DateTimeFormat('ru-RU', {timeStyle: 'medium'}).format(date)
-
+const formatDate = (date) =>
+  new Intl.DateTimeFormat('ru-RU', { timeStyle: 'medium' }).format(date)
 
 const parseData = (data) => {
   return JSON.parse(data)
@@ -25,7 +25,6 @@ const parseData = (data) => {
 const prepareData = (data) => {
   return JSON.stringify(data)
 }
-
 
 const message = (msg, username = 'server', isMY) => {
   const msgBox = document.createElement('div')
@@ -50,11 +49,10 @@ const message = (msg, username = 'server', isMY) => {
   return msgBox
 }
 
-
 module.exports = {
   uuidv4,
   formatDate,
   parseData,
   prepareData,
-  message
+  message,
 }

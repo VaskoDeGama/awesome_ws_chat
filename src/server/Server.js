@@ -97,7 +97,7 @@ class Server {
           }
           case 'casterLeaves': {
             if (this.userList.size > 0) {
-              const next = this.userList.keys().slice(-1).pop()
+              const next = [...this.userList.keys()].slice(-1).pop()
               this.userList.get(next).send(prepareData({ type: 'startCast' }))
             }
 

@@ -1,6 +1,6 @@
 'use strict'
 
-import { parseData, prepareData } from './utils'
+import { parseData, prepareData, debounce } from './utils'
 
 export default class Broadcast {
   /**
@@ -39,9 +39,11 @@ export default class Broadcast {
           .getUserMedia(constraints)
           .then((stream) => {
             this.videoBox.srcObject = stream
-            this.videoBox.addEventListener('loadedmetadata', () => {
-              resolve(this)
-            })
+            this.onLoadedMetaDataEvent = () => resolve(this)
+            this.videoBox.addEventListener(
+              'loadedmetadata',
+              this.onLoadedMetaDataEvent
+            )
           })
       } else {
         console.error('getUserMedia() is not supported by your browser')
@@ -116,11 +118,24 @@ export default class Broadcast {
         const { type, message } = parseData(event.data)
         if (type === 'stream') {
           this.setSnapshot(message)
+        } else if (type === 'startCast') {
+          this.startBroadcast()
+          this.iAmOnline()
         }
       })
     } catch (e) {
       console.log(e)
     }
+  }
+
+  iAmOnline() {
+    this.service.client.send(
+      prepareData({
+        type: 'text',
+        message: 'I am online',
+        owner: this.service.id,
+      })
+    )
   }
 
   /**
@@ -130,9 +145,24 @@ export default class Broadcast {
     this.camInitialize()
       .then((res) => res.init())
       .then(() => {
-        if (!this.service.canCast) {
+        if (this.service.canCast) {
           this.startBroadcast()
+          console.log('i Am online')
+          this.iAmOnline()
+          window.addEventListener('beforeunload', () => {
+            if (this.service.canCast) {
+              this.service.client.send(
+                prepareData({
+                  type: 'casterLeaves',
+                })
+              )
+            }
+            this.stop()
+          })
         }
+      })
+      .then(() => {
+        //setTimeout(() => this.stop(), 10000)
       })
   }
 
@@ -156,7 +186,8 @@ export default class Broadcast {
    * Stop broadcasting
    */
   stop() {
-    this.videoBox.removeEventListener('loadeddata')
+    console.log('i am  offline')
+    this.videoBox.removeEventListener('loadeddata', this.onLoadedMetaDataEvent)
     clearInterval(this.broadcastInterval)
   }
 }

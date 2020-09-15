@@ -1,6 +1,6 @@
 'use strict'
 
-import { prepareData, uuidv4 } from './utils'
+import { parseData, prepareData, uuidv4 } from './utils'
 
 export default class Client {
   /**
@@ -9,6 +9,7 @@ export default class Client {
   constructor() {
     this.client = null
     this.id = uuidv4()
+    this.canCast = false
   }
 
   /**
@@ -52,6 +53,13 @@ export default class Client {
         clientID: this.id,
       }
       this.client.send(prepareData(msg))
+    })
+
+    this.addEvent('message', (event) => {
+      const data = parseData(event.data)
+      if (data.type === 'text' && data.canCast) {
+        this.canCast = true
+      }
     })
 
     // error handler

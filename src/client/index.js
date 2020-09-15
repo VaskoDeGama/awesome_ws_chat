@@ -2,7 +2,7 @@ import './style.scss'
 
 import Client from './Client'
 import Broadcast from './Broadcast'
-import { parseData } from './utils'
+import Chat from './Chat'
 
 const client = new Client()
 
@@ -16,33 +16,16 @@ const broadcast = new Broadcast({
 })
 broadcast.start()
 
-const textChat = document.querySelector('#textChat')
-const input = document.querySelector('.msger-input')
-const chatBox = document.querySelector('.msger-chat')
+const chat = new Chat({
+  service: client,
+  chatSelector: '#textChat',
+  chatBoxSelector: '.msger-chat',
+  inputSelector: '.msger-input',
+  closeSelector: '.close',
+  inputAreaSelector: '.msger-inputarea',
+})
 
-// close chat
-// document.querySelectorAll('.close').forEach((node) => {
-//   node.addEventListener('click', () => {
-//     textChat.classList.toggle('hide')
-//   })
-// })
-
-// submit handler
-// document
-//   .querySelector('.msger-inputarea')
-//   .addEventListener('submit', async (event) => {
-//     event.preventDefault()
-//     if (input.value.length !== 0) {
-//       const response = await mailer.fetchWS({
-//         type: 'text',
-//         message: input.value,
-//       })
-//       console.log('RESPONSE FROM MAILER:', response)
-//       if (response.type === 'ok') {
-//         input.value = ''
-//       }
-//     }
-//   })
+chat.init()
 
 // message handler
 // client.onmessage = (event) => {
