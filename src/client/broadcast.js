@@ -1,6 +1,6 @@
 'use strict'
 
-import { parseData, prepareData, debounce } from './utils'
+import { parseData, prepareData } from './utils'
 
 export default class Broadcast {
   /**
@@ -58,7 +58,7 @@ export default class Broadcast {
    * @param styleData
    * @returns target
    */
-  static setSize(target, styleData) {
+  setSize(target, styleData) {
     target.style.width = `${styleData.width} px`
     target.style.height = `${styleData.height} px`
     target.width = styleData.width
@@ -75,7 +75,7 @@ export default class Broadcast {
    * @param snapshotCanvas
    * @returns {string}
    */
-  static getSnapshot(source, snapshotContext, snapshotCanvas) {
+  getSnapshot(source, snapshotContext, snapshotCanvas) {
     snapshotContext.drawImage(source, 0, 0)
     return snapshotCanvas.toDataURL('image/jpeg', 0.1).split(',')[1]
   }
@@ -105,10 +105,10 @@ export default class Broadcast {
       this.broadcastCanvas.id = 'stream'
       this.snapshotCanvas.id = 'screenshot'
       this.streamBox.appendChild(
-        Broadcast.setSize(this.snapshotCanvas, vidStyleData)
+        this.setSize(this.snapshotCanvas, vidStyleData)
       )
       this.streamBox.appendChild(
-        Broadcast.setSize(this.broadcastCanvas, vidStyleData)
+        this.setSize(this.broadcastCanvas, vidStyleData)
       )
       this.snapshotCtx = this.snapshotCanvas.getContext('2d')
       this.broadcastCtx = this.broadcastCanvas.getContext('2d')
@@ -171,7 +171,7 @@ export default class Broadcast {
    */
   startBroadcast() {
     this.broadcastInterval = setInterval(() => {
-      const snapshot = Broadcast.getSnapshot(
+      const snapshot = this.getSnapshot(
         this.videoBox,
         this.snapshotCtx,
         this.snapshotCanvas
