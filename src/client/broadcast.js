@@ -1,6 +1,6 @@
 'use strict'
 
-import { parseData, prepareData } from './utils'
+import { parseData } from './utils'
 
 export default class Broadcast {
   /**
@@ -129,13 +129,11 @@ export default class Broadcast {
   }
 
   iAmOnline() {
-    this.service.client.send(
-      prepareData({
-        type: 'text',
-        message: 'I am online',
-        owner: this.service.id,
-      })
-    )
+    this.service.send({
+      type: 'text',
+      message: 'I am online',
+      owner: this.service.id,
+    })
   }
 
   /**
@@ -151,11 +149,9 @@ export default class Broadcast {
           this.iAmOnline()
           window.addEventListener('beforeunload', () => {
             if (this.service.canCast) {
-              this.service.client.send(
-                prepareData({
-                  type: 'casterLeaves',
-                })
-              )
+              this.service.send({
+                type: 'casterLeaves',
+              })
             }
             this.stop()
           })
@@ -176,9 +172,7 @@ export default class Broadcast {
         this.snapshotCtx,
         this.snapshotCanvas
       )
-      this.service.client.send(
-        prepareData({ type: 'stream', message: snapshot })
-      )
+      this.service.send({ type: 'stream', message: snapshot })
     }, 1000 / this.fps)
   }
 

@@ -10,6 +10,7 @@ export default class Client {
     this.client = null
     this.id = uuidv4()
     this.canCast = false
+    this.messages = new Map()
   }
 
   /**
@@ -26,8 +27,41 @@ export default class Client {
     return this
   }
 
+  /**
+   * add ws event
+   * @param type
+   * @param cb
+   */
   addEvent(type, cb) {
     this.client.addEventListener(type, cb)
+  }
+
+  /**
+   * add message id and return Promise
+   * @param msg
+   * @returns {Promise<unknown>}
+   */
+  send(msg) {
+    return new Promise((resolve) => {
+      const messageId = uuidv4()
+      this.messages.set(messageId, resolve)
+      this.client.send(
+        prepareData({
+          messageId,
+          owner: this.id,
+          ...msg,
+        })
+      )
+    })
+  }
+
+  /**
+   * Check id in messages
+   * @param id
+   * @returns {boolean}
+   */
+  isMyMessage(id) {
+    return this.messages.has(id)
   }
 
   /**
@@ -47,6 +81,11 @@ export default class Client {
       const data = parseData(event.data)
       if (data.type === 'text' && data.canCast) {
         this.canCast = true
+      }
+      if (data.type === 'ok') {
+        const localResolve = this.messages.get(data.messageId)
+        localResolve({ status: true })
+        //this.messages.delete(data.messageId)
       }
     })
 

@@ -100,14 +100,11 @@ class Server {
               const next = [...this.userList.keys()].slice(-1).pop()
               this.userList.get(next).send(prepareData({ type: 'startCast' }))
             }
-
             break
           }
           case 'text': {
             const msg = { type: 'ok', messageId: receivedData.messageId }
-
             this.userList.get(receivedData.owner).send(prepareData(msg))
-
             this.broadcast(data)
             break
           }

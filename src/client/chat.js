@@ -1,6 +1,6 @@
 'use strict'
 
-import { parseData, prepareData, message } from './utils'
+import { parseData, message } from './utils'
 
 export default class Chat {
   /**
@@ -35,21 +35,30 @@ export default class Chat {
     this.inputBox.addEventListener('submit', async (event) => {
       event.preventDefault()
       if (this.input.value.length !== 0) {
-        this.service.client.send(
-          prepareData({
+        this.service
+          .send({
             type: 'text',
             message: this.input.value,
-            owner: this.service.id,
           })
-        )
-        this.input.value = ''
+          .then((res) => {
+            if (res) {
+              this.input.value = ''
+            }
+          })
       }
     })
+
     this.service.addEvent('message', (event) => {
       const data = parseData(event.data)
       switch (data.type) {
         case 'text': {
-          this.chatBox.appendChild(message(data.message, data.owner, false))
+          this.chatBox.appendChild(
+            message(
+              data.message,
+              data.owner,
+              this.service.isMyMessage(data.messageId)
+            )
+          )
           if (this.chatBox.scrollTop < this.chatBox.scrollHeight) {
             this.chatBox.scrollTop = this.chatBox.scrollHeight
           }
@@ -58,19 +67,4 @@ export default class Chat {
       }
     })
   }
-
-  // fetchWS(mail) {
-  //   const messageId = uuidv4()
-  //   return new Promise((resolve, reject) => {
-  //     this.setMsg(messageId, resolve)
-  //     this.reject = reject
-  //     this.service.client.send(
-  //       prepareData({
-  //         owner: this.owner,
-  //         messageId,
-  //         ...mail,
-  //       })
-  //     )
-  //   })
-  // }
 }
