@@ -43,33 +43,12 @@ chat.init()
 //       }
 //       break
 //     }
-//     case 'stream': {
-//       if (broadcast.img !== null) {
-//         broadcast.setSnapshot(data.message)
-//       }
-//       break
-//     }
+//
 //     case 'ok': {
 //       const localResolve = mailer.messeges[data.messageId]
 //       localResolve(data)
 //       break
 //     }
-//     case 'startCast': {
-//       canCast = true
-//       console.log('startCast')
-//       broadcast.start()
-//     }
+//
 //   }
 // }
-
-// window.addEventListener('beforeunload', () => {
-//   if (canCast) {
-//     client.send(
-//       prepareData({
-//         type: 'casterLeaves',
-//       })
-//     )
-//   }
-//   broadcast.stop()
-// })
-//

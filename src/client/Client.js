@@ -42,8 +42,13 @@ export default class Client {
       }
       this.client.send(prepareData(msg))
     }
-
     //main
+    this.addEvent('message', (event) => {
+      const data = parseData(event.data)
+      if (data.type === 'text' && data.canCast) {
+        this.canCast = true
+      }
+    })
 
     // before unload
     window.addEventListener('beforeunload', () => {
@@ -53,13 +58,6 @@ export default class Client {
         clientID: this.id,
       }
       this.client.send(prepareData(msg))
-    })
-
-    this.addEvent('message', (event) => {
-      const data = parseData(event.data)
-      if (data.type === 'text' && data.canCast) {
-        this.canCast = true
-      }
     })
 
     // error handler

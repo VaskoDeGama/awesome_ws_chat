@@ -1,6 +1,6 @@
 'use strict'
 
-import { prepareData, uuidv4 } from './utils'
+import { parseData, prepareData, uuidv4, message } from './utils'
 
 export default class Chat {
   /**
@@ -48,9 +48,24 @@ export default class Chat {
           prepareData({
             type: 'text',
             message: this.input.value,
+            owner: this.service.id,
           })
         )
         this.input.value = ''
+      }
+    })
+    this.service.client.addEventListener('message', (event) => {
+      const data = parseData(event.data)
+      switch (data.type) {
+        case 'text': {
+          this.chatBox.appendChild(
+            message(data.message, data.owner, this.itMyMessage(data.messageId))
+          )
+          if (this.chatBox.scrollTop < this.chatBox.scrollHeight) {
+            this.chatBox.scrollTop = this.chatBox.scrollHeight
+          }
+          break
+        }
       }
     })
   }
