@@ -1,8 +1,8 @@
 import './style.scss'
 
-import Client from './Client'
-import Broadcast from './Broadcast'
-import Chat from './Chat'
+import Client from './client'
+import Broadcast from './broadcast'
+import Chat from './chat'
 
 const client = new Client()
 
@@ -30,20 +30,8 @@ chat.init()
 // message handler
 // client.onmessage = (event) => {
 //   const data = parseData(event.data)
-//   switch (data.type) {
-//     case 'text': {
-//       chatBox.appendChild(
-//         message(data.message, data.owner, mailer.itMyMessage(data.messageId))
-//       )
-//       if (chatBox.scrollTop < chatBox.scrollHeight) {
-//         chatBox.scrollTop = chatBox.scrollHeight
-//       }
-//       if (data.canCast) {
-//         canCast = true
-//       }
-//       break
-//     }
 //
+//    switch(data.type) {
 //     case 'ok': {
 //       const localResolve = mailer.messeges[data.messageId]
 //       localResolve(data)
